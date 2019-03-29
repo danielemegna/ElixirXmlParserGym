@@ -23,7 +23,8 @@ defmodule Events.MixProject do
   defp deps do
     [
       {:sweet_xml, "~> 0.6.6"},
-      {:poison, "~> 4.0"}
+      {:poison, "~> 4.0"},
+      {:scribe, "~> 0.8"}
     ]
   end
 end

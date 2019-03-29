@@ -44,6 +44,7 @@ defmodule Events do
       |> Enum.take(5)
 
       
+    #Scribe.print results
     IO.inspect results
 
     #IO.puts Poison.encode!(results)
