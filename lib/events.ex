@@ -26,6 +26,7 @@ defmodule Events do
       end)
 
     results = events 
+      #|> Stream.filter(& String.contains?(&1.emitted_at, "JAN"))
       #|> Stream.filter(&(&1.aggregate_id == "a0w0N00000AWjZFQA1"))
       #|> Stream.filter(&(&1.type == "SetupReceivedEvent"))
       |> Stream.filter(& !is_nil(&1.contract))
@@ -38,16 +39,15 @@ defmodule Events do
       #  ]
       #)
       |> Stream.flat_map(& &1.contract["salesPoints"])
-      |> Stream.flat_map(& &1["acquiring"]["schemes"])
-      |> Stream.flat_map(& &1["properties"])
+      |> Stream.flat_map(& &1["terminals"])
+      |> Stream.flat_map(& &1["pricing"])
       |> Stream.uniq
-      |> Enum.take(5)
+      |> Enum.take(3)
 
       
     #Scribe.print results
     IO.inspect results
-
-    #IO.puts Poison.encode!(results)
+    IO.puts results |> Poison.encode |> elem(1) 
 
     IO.puts "Found events: #{Enum.count(results)}"
     #IO.puts "Total events: #{Enum.count(events)}"
