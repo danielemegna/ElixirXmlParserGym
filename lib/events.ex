@@ -38,16 +38,20 @@ defmodule Events do
       #    &1.contract["merchant"]["ONLUSType"]
       #  ]
       #)
-      |> Stream.flat_map(& &1.contract["salesPoints"])
-      |> Stream.flat_map(& &1["terminals"])
-      |> Stream.flat_map(& &1["pricing"])
-      |> Stream.uniq
-      |> Enum.take(3)
+      |> Stream.map(& &1.contract)
+      |> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["terminals"]) == 1)
+      |> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["acquiring"]["schemes"]) < 5)
+      #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["VAS"]) == 2)
+      #|> Stream.flat_map(& &1["terminals"])
+      #|> Stream.flat_map(& &1["enablements"])
+      #|> Stream.uniq
+      |> Stream.drop(25)
+      |> Enum.take(1)
 
       
     #Scribe.print results
-    IO.inspect results
-    IO.puts results |> Poison.encode |> elem(1) 
+    #IO.inspect results
+    IO.puts results |> Poison.encode(pretty: true) |> elem(1) 
 
     IO.puts "Found events: #{Enum.count(results)}"
     #IO.puts "Total events: #{Enum.count(events)}"
