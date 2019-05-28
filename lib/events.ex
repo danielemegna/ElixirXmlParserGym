@@ -39,13 +39,19 @@ defmodule Events do
       #  ]
       #)
       |> Stream.map(& &1.contract)
-      |> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["terminals"]) == 1)
-      |> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["acquiring"]["schemes"]) < 5)
+      #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["terminals"]) > 1)
+      |> Stream.filter(fn(c) -> c["salesPoints"]
+        |> Enum.at(0)
+        |> Map.get("terminals")
+        |> Enum.any?(fn(t) -> Enum.count(t["enablements"]) > 7 end)
+      end)
+      #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["VAS"]) > 1)
+      #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["acquiring"]["schemes"]) < 3)
       #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["VAS"]) == 2)
       #|> Stream.flat_map(& &1["terminals"])
       #|> Stream.flat_map(& &1["enablements"])
       #|> Stream.uniq
-      |> Stream.drop(25)
+      #|> Stream.drop(15)
       |> Enum.take(1)
 
       
