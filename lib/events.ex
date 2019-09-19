@@ -26,6 +26,7 @@ defmodule Events do
       end)
 
     results = events 
+      #|> Stream.drop(200)
       #|> Stream.filter(& String.contains?(&1.emitted_at, "JAN"))
       #|> Stream.filter(&(&1.aggregate_id == "a0w0N00000AWjZFQA1"))
       #|> Stream.filter(&(&1.type == "SetupReceivedEvent"))
@@ -65,7 +66,7 @@ defmodule Events do
       #  |> Map.get("terminals")
       #  |> Enum.any?(fn(t) -> Enum.any?(t["enablements"], fn(e) -> e["code"] == "DCC" end) end)
       #end)
-      #|> Stream.drop(10)
+      #|> Stream.drop(100)
       |> Enum.take(1)
 
       
