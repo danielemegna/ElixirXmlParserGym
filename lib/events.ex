@@ -40,18 +40,32 @@ defmodule Events do
       #)
       |> Stream.map(& &1.contract)
       #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["terminals"]) > 1)
-      |> Stream.filter(fn(c) -> c["salesPoints"]
-        |> Enum.at(0)
-        |> Map.get("terminals")
-        |> Enum.any?(fn(t) -> Enum.count(t["enablements"]) > 7 end)
-      end)
+      #|> Stream.filter(fn(c) -> c["salesPoints"]
+      #  |> Enum.at(0)
+      #  |> Map.get("terminals")
+      #  |> Enum.any?(fn(t) -> Enum.count(t["enablements"]) > 7 end)
+      #end)
       #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["VAS"]) > 1)
       #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["acquiring"]["schemes"]) < 3)
       #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["VAS"]) == 2)
-      #|> Stream.flat_map(& &1["terminals"])
-      #|> Stream.flat_map(& &1["enablements"])
+      #|> Stream.flat_map(& &1["salesPoints"])
+      #|> Stream.flat_map(& &1["VAS"])
+      #|> Stream.filter(& &1["productCode"] == "DCC")
+      #|> Stream.filter(& &1["pricing"] |> Enum.count >= 0)
+      #|> Stream.flat_map(& &1["acquiring"]["schemes"])
+      #|> Stream.filter(& &1["acquirer"] == "AMEX")
+      #|> Stream.flat_map(& &1["properties"])
       #|> Stream.uniq
-      #|> Stream.drop(15)
+      #|> Stream.filter(fn(c) ->
+      #  sp = c["salesPoints"] |> Enum.at(0)
+      #  (sp["terminals"] |> Enum.count) == 2
+      #end)
+      #|> Stream.filter(fn(c) -> c["salesPoints"]
+      #  |> Enum.at(0)
+      #  |> Map.get("terminals")
+      #  |> Enum.any?(fn(t) -> Enum.any?(t["enablements"], fn(e) -> e["code"] == "DCC" end) end)
+      #end)
+      #|> Stream.drop(10)
       |> Enum.take(1)
 
       
