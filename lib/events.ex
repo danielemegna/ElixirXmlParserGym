@@ -3,17 +3,17 @@ defmodule Events do
 
   def main(_args) do
     events = File.stream!("real.xml")
-      |> stream_tags(:ROW) 
+      |> stream_tags(:DATA_RECORD) 
       |> Stream.map(fn {_, doc} -> xpath(doc, ~x".",
-          id: ~x"./COLUMN[@NAME='ID']/text()"S,
-          aggregate_id: ~x"./COLUMN[@NAME='AGGREGATEID']/text()"S,
-          source: ~x"./COLUMN[@NAME='SOURCE']/text()"S,
-          nature: ~x"./COLUMN[@NAME='NATURE']/text()"S,
-          type: ~x"./COLUMN[@NAME='TYPE']/text()"S,
-          emitted_at: ~x"./COLUMN[@NAME='EMITTEDAT']/text()"S,
-          received_at: ~x"./COLUMN[@NAME='RECEIVEDAT']/text()"S,
-          system_offset: ~x"./COLUMN[@NAME='SYSTEMOFFSET']/text()"I,
-          payload: ~x"./COLUMN[@NAME='PAYLOAD']/text()"s
+          id: ~x"./ID/text()"S,
+          aggregate_id: ~x"./AGGREGATEID/text()"S,
+          source: ~x"./SOURCE/text()"S,
+          nature: ~x"./NATURE/text()"S,
+          type: ~x"./TYPE/text()"S,
+          emitted_at: ~x"./EMITTEDAT/text()"S,
+          received_at: ~x"./RECEIVEDAT/text()"S,
+          system_offset: ~x"./SYSTEMOFFSET/text()"I,
+          payload: ~x"./PAYLOAD/text()"s
       )end)
       |> Stream.map(fn(event) ->
         emitted_at = event.emitted_at # Regex.named_captures(~r/(?<day>[0-9]{2})-(?<month>[A-Z]{3})-(?<year>[0-9]{2})/, event.emitted_at)
