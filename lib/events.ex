@@ -26,7 +26,7 @@ defmodule Events do
       end)
 
     results = events 
-      #|> Stream.drop(200)
+      #|> Stream.drop(10000)
       #|> Stream.filter(& String.contains?(&1.emitted_at, "JAN"))
       #|> Stream.filter(&(&1.aggregate_id == "a0w0N00000AWjZFQA1"))
       #|> Stream.filter(&(&1.type == "SetupReceivedEvent"))
@@ -40,7 +40,16 @@ defmodule Events do
       #  ]
       #)
       |> Stream.map(& &1.contract)
-      #|> Stream.filter(& Enum.count(Enum.at(&1["salesPoints"], 0)["terminals"]) > 1)
+      |> Stream.filter(& Enum.count(&1["salesPoints"]) == 1)
+      #|> Stream.filter(fn(c) ->
+      #  sp = c["salesPoints"] |> Enum.at(0)
+      #  (sp["terminals"] |> Enum.count) == 1
+      #end)
+      #|> Stream.filter(fn(c) ->
+      #  sp = c["salesPoints"] |> Enum.at(0)
+      #  t = sp["terminals"] |> Enum.at(0)
+      #  ....
+      #end)
       #|> Stream.filter(fn(c) -> c["salesPoints"]
       #  |> Enum.at(0)
       #  |> Map.get("terminals")
@@ -57,16 +66,11 @@ defmodule Events do
       #|> Stream.filter(& &1["acquirer"] == "AMEX")
       #|> Stream.flat_map(& &1["properties"])
       #|> Stream.uniq
-      #|> Stream.filter(fn(c) ->
-      #  sp = c["salesPoints"] |> Enum.at(0)
-      #  (sp["terminals"] |> Enum.count) == 2
-      #end)
       #|> Stream.filter(fn(c) -> c["salesPoints"]
       #  |> Enum.at(0)
       #  |> Map.get("terminals")
       #  |> Enum.any?(fn(t) -> Enum.any?(t["enablements"], fn(e) -> e["code"] == "DCC" end) end)
       #end)
-      #|> Stream.drop(100)
       |> Enum.take(1)
 
       
